@@ -1,4 +1,3 @@
-
 # ninjat
 
 ninjat is a single-file, client-free chat server.
@@ -28,6 +27,17 @@ Available commands are :
 /p <dest> <msg>  : pm someone based on nickname
 /p . <msg>       : pm the last person you pm'd
 /auth <password> : input a password to authorize your connection
+```
+
+## Configuration
+
+All configuration parameters are contained in `#define` statements at the top of the file.
+
+```cpp
+#define PORT 1337
+#define PRIVATE false
+#define PASSWORD "chaussette"
+#define MAX_ATTEMPT 3
 ```
 
 ## TODO
