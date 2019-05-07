@@ -1,7 +1,7 @@
 
 # ninjat
 
-ninjat is a minimal, feature-packed, single-file, client-free chat server.
+ninjat is a single-file, client-free chat server.
 
 To compile and launch the server : 
 
@@ -27,12 +27,12 @@ Available commands are :
 /list            : list people on the chat
 /p <dest> <msg>  : pm someone based on nickname
 /p . <msg>       : pm the last person you pm'd
+/auth <password> : input a password to authorize your connection
 ```
 
 ## TODO
 
 - Custom port
 - Custom motd (started)
-- Password protection
+- ~~Password protection~~ **DONE**
 - nick reservation 
-- use OOP to structure code (util, network, client class)

@@ -11,6 +11,7 @@
 #define SOCKET_ERROR -1
 #define closesocket(s) close(s)
 
+#define PORT 1337
 #define PRIVATE false
 #define PASSWORD "chaussette"
 #define MAX_ATTEMPT 3
@@ -275,7 +276,7 @@ int main(int argc, char** argv)
 {
   int error = init("0.0.2"); //will be used to handle all networking errors
   int sock;
-  int port = 1337;
+  int port = PORT;
   struct sockaddr_in sin;
   sin.sin_addr.s_addr = INADDR_ANY;
   sin.sin_family = AF_INET;
