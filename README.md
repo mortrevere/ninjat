@@ -9,7 +9,7 @@ g++ main.cpp -pthread -std=c++11 -o ninjat-serv
 ./ninjat-serv
 ```
 
-Clients can join any TCP client like `netcat` or `telnet`.
+Clients can join the chat using any TCP client like `netcat` or `telnet`.
 
 ```
 nc <server_ip_address> <port>
@@ -45,4 +45,4 @@ All configuration parameters are contained in `#define` statements at the top of
 - Custom port
 - Custom motd (started)
 - ~~Password protection~~ **DONE**
-- nick reservation 
+- Nick reservation 
