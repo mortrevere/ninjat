@@ -26,7 +26,7 @@ Available commands are :
 /list            : list people on the chat
 /p <dest> <msg>  : pm someone based on nickname
 /p . <msg>       : pm the last person you pm'd
-/auth <password> : input a password to authorize your connection
+/auth <password> : input a password to authorize your connection (for private servers ony)
 ```
 
 ## Configuration
@@ -38,11 +38,14 @@ All configuration parameters are contained in `#define` statements at the top of
 #define PRIVATE false
 #define PASSWORD "chaussette"
 #define MAX_ATTEMPT 3
+#define MOTD_PATH "./motd"
 ```
+
+If the file containing the motd for the server is missing, it will simply skip that step.
 
 ## TODO
 
-- Custom port
-- Custom motd (started)
+- ~~Custom port~~ todo on CLI
+- ~~Custom motd~~ **DONE**
 - ~~Password protection~~ **DONE**
-- Nick reservation 
+- nick reservation 
