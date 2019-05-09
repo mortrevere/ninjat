@@ -200,9 +200,13 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
           if(in.substr(0,6) == "/nick ") {
             nick = in.substr(6);
             nick = nick.substr(0,nick.length() - 1);
-            setNick(csock,clients,nicks,nick);
-            sAll(" *** [INFO] changed nick to : <" + nick + ">\n", clients);
-            s(buildList(nicks) + "\n", &csock);
+            if(nick.length() > 16) {
+              s(" *** [ERROR] : Nicknames are 16-char-long at most.\n", &csock);
+            } else {
+              setNick(csock,clients,nicks,nick);
+              sAll(" *** [INFO] changed nick to : <" + nick + ">\n", clients);
+              s(buildList(nicks) + "\n", &csock);
+            }
           }
           else if(in.substr(0,5) == "/list") {
             s(buildList(nicks) + "\n", &csock);
