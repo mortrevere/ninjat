@@ -177,6 +177,14 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
       else {
         buffer[error] = '\0';
         in = buffer;
+
+        if(in.substr(0,5) == "/quit")
+        {
+          clients.erase(clients.begin() + getIndex(csock, clients));
+          closesocket(csock);
+          return 0;
+        }
+
         if(!authenticated) {
           if(in.substr(0,6) == "/auth ") {
             password = in.substr(6);
