@@ -103,7 +103,7 @@ bool s(std::string toSend, int* sock, bool format = 1) {
 
 void sAll(std::string in,std::vector<int>& clients) {
   std::cout << "[SENT:*] : " << in << std::endl;
-  for(int i = 0; i < clients.size(); i++) {
+  for (std::size_t i = 0; i < clients.size(); i++) {
     s(in,&clients[i]);
   }
 }
@@ -127,7 +127,7 @@ bool setNick(int& csock, std::vector<int>& clients, std::vector<std::string>& ni
 }
 
 int getIndex(int& csock, std::vector<int>& clients) {
-  for(int i = 0; i < clients.size(); i++) {
+  for (std::size_t i = 0; i < clients.size(); i++) {
     if(clients[i] == csock) {
       return i;
     }
@@ -136,7 +136,7 @@ int getIndex(int& csock, std::vector<int>& clients) {
 }
 
 int getIndexByNick(std::string nick, std::vector<std::string>& nicks) {
-  for(int i = 0; i < nicks.size(); i++) {
+  for (std::size_t i = 0; i < nicks.size(); i++) {
     if(nicks[i] == nick) {
       return i;
     }
@@ -261,7 +261,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
   return 0;
 }
 
-int main(int argc, char** argv) {
+int main() {
   int error = init("0.0.2"); //will be used to handle all networking errors
   int sock;
   int port = PORT;
@@ -276,8 +276,6 @@ int main(int argc, char** argv) {
   struct sockaddr_in csin;
   socklen_t tempo = sizeof(csin);
 
-  bool ready = 0;
-  int i_fsize = 0;
   std::vector<std::string> lines;
   std::ofstream fout;
 
