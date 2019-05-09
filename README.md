@@ -5,7 +5,7 @@ ninjat is a single-file, client-free chat server.
 To compile and launch the server : 
 
 ```
-g++ main.cpp -pthread -std=c++11 -o ninjat-serv
+make
 ./ninjat-serv
 ```
 
