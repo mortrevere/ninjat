@@ -75,23 +75,12 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 bool s(std::string toSend, int* sock, bool format = 1) {
   if(*sock <= 0)
-    return 0;
+    return false;
   if(format)
     toSend = "\t\t\t\t\t\t" + toSend;
-  char buffer[65535];
-  int error;
-  for(unsigned int i = 0; i < toSend.size();i++) {
-    buffer[i] = toSend.c_str()[i];
-  }
 
-  error = send(*sock,buffer,toSend.size(),0);
-  if (error == SOCKET_ERROR) {
-    std::cout << "\t[FAIL]" << std::endl;
-    return 0;
-  }
-  else {
-    return 1;
-  }
+  int error = send(*sock,toSend.c_str(),toSend.size(),0);
+  return !(error == SOCKET_ERROR);
 }
 
 void sAll(const std::string& in, std::vector<int>& clients) {
@@ -113,10 +102,10 @@ bool setNick(int csock, std::vector<int>& clients, std::vector<std::string>& nic
   for(unsigned int i = 0; i < clients.size(); i++) {
     if(clients[i] == csock) {
       nicks[i] = nick;
-      return 1;
+      return true;
     }
   }
-  return 0;
+  return false;
 }
 
 int getIndex(int csock, std::vector<int>& clients) {
