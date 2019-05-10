@@ -17,7 +17,7 @@
 #define MAX_ATTEMPT 3
 #define MOTD_PATH "./motd"
 
-int init(std::string version) {
+int init(const std::string& version) {
   std::cout << "ninjat server - v" << version;
 #ifdef WIN32
   WSADATA WSAData;
@@ -29,7 +29,7 @@ int init(std::string version) {
 #endif
 }
 
-void die(std::string err) {
+void die(const std::string& err) {
   std::cout << "[FATAL ERROR] : " << err << std::endl;
 #ifdef WIN32
   WSACleanup();
@@ -37,22 +37,22 @@ void die(std::string err) {
   std::exit(EXIT_FAILURE);
 }
 
-void info(std::string info) {
+void info(const std::string& info) {
   std::cout << "[INFO] : " << info << std::endl;
 }
 
-void err(std::string err) {
+void err(const std::string& err) {
   std::cout << "[ERR] : " << err << std::endl;
 }
 
-std::string fileRead(const char *path) {
+std::string fileRead(const std::string& path) {
   std::ifstream infile(path, std::ios::in);
   std::string out("");
   char chr;
   if(infile){while(infile.get(chr)){out += chr;}return out;}else {return "";}
 }
 
-bool fileExists(const char *path) {
+bool fileExists(const std::string& path) {
   std::ifstream infile(path);
   return infile.good();
 }
@@ -94,7 +94,7 @@ bool s(std::string toSend, int* sock, bool format = 1) {
   }
 }
 
-void sAll(std::string in,std::vector<int>& clients) {
+void sAll(const std::string& in, std::vector<int>& clients) {
   std::cout << "[SENT:*] : " << in << std::endl;
   for(int i = 0; i < clients.size(); i++) {
     s(in,&clients[i]);
@@ -109,7 +109,7 @@ std::string buildList(std::vector<std::string>& nicks) {
 }
 
 
-bool setNick(int& csock, std::vector<int>& clients, std::vector<std::string>& nicks, std::string nick) {
+bool setNick(int csock, std::vector<int>& clients, std::vector<std::string>& nicks, std::string nick) {
   for(unsigned int i = 0; i < clients.size(); i++) {
     if(clients[i] == csock) {
       nicks[i] = nick;
@@ -119,7 +119,7 @@ bool setNick(int& csock, std::vector<int>& clients, std::vector<std::string>& ni
   return 0;
 }
 
-int getIndex(int& csock, std::vector<int>& clients) {
+int getIndex(int csock, const std::vector<int>& clients) {
   for(int i = 0; i < clients.size(); i++) {
     if(clients[i] == csock) {
       return i;
@@ -128,7 +128,7 @@ int getIndex(int& csock, std::vector<int>& clients) {
   return -1;
 }
 
-int getIndexByNick(std::string nick, std::vector<std::string>& nicks) {
+int getIndexByNick(const std::string& nick, std::vector<std::string>& nicks) {
   for(int i = 0; i < nicks.size(); i++) {
     if(nicks[i] == nick) {
       return i;
