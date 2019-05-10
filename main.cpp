@@ -126,10 +126,20 @@ int getIndexByNick(std::string nick, std::vector<std::string>& nicks) {
   return -1;
 }
 
+void clientCleanup(int csock, std::vector<int>& clients, std::vector<std::string>& nicks, bool notifyEveryone = true) {
+  std::string nick = nicks[getIndex(csock, clients)];
+  nicks.erase(nicks.begin() + getIndex(csock, clients));
+  clients.erase(clients.begin() + getIndex(csock, clients));
+  closesocket(csock);
+  if(notifyEveryone && nick != "") {
+    sAll(" *** [QUIT] : " + nick + "\n", clients);
+  }
+}
+
 int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& nicks) {
   char buffer[65535];
   std::string in, nick, lastPrivate, to, password;
-  int error = 0, attempt = 0; //will be used to handle all networking errors
+  int error = 0, attempt = 0;
   bool authenticated = !PRIVATE;
   info("Taken care of client !");
   if(csock != INVALID_SOCKET) {
@@ -149,11 +159,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
       error = recv(csock,buffer,65535,0);
       if (error <= 0) {
         info("Peer disconnected.");
-        nicks.erase(nicks.begin() + getIndex(csock, clients));
-        clients.erase(clients.begin() + getIndex(csock, clients));
-        closesocket(csock);
-        if(nick != "")
-          sAll(" *** [QUIT] : " + nick + "\n", clients);
+        clientCleanup(csock, clients, nicks);
         return 0;
       }
       else {
@@ -162,8 +168,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
 
         if(in.substr(0,5) == "/quit")
         {
-          clients.erase(clients.begin() + getIndex(csock, clients));
-          closesocket(csock);
+          clientCleanup(csock, clients, nicks);
           return 0;
         }
 
@@ -178,8 +183,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
               attempt++;
               s("WRONG PASSWORD. (" + std::to_string(attempt) + "/" + std::to_string(MAX_ATTEMPT)  + ")\n", csock);
               if(attempt == MAX_ATTEMPT) {
-                clients.erase(clients.begin() + getIndex(csock, clients));
-                closesocket(csock);
+                clientCleanup(csock, clients, nicks, false);
                 return 0;
               }
             }
