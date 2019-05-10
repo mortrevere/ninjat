@@ -45,13 +45,6 @@ void err(const std::string& err) {
   std::cout << "[ERR] : " << err << std::endl;
 }
 
-std::string intToStr(int n) {
-  std::ostringstream oss;
-  oss << n;
-  return oss.str();
-}
-
-
 std::string fileRead(const std::string& path) {
   std::ifstream infile(path, std::ios::in);
   std::string out("");
@@ -109,7 +102,7 @@ void sAll(const std::string& in, std::vector<int>& clients) {
 }
 
 std::string buildList(std::vector<std::string>& nicks) {
-  std::string list = intToStr(nicks.size()) + " users :";
+  std::string list = std::to_string(nicks.size()) + " users :";
   for(unsigned int i = 0; i < nicks.size(); i++)
     list += " " + (nicks[i].length() ? nicks[i] : "<no_nickname_yet>");
   return list;
@@ -194,7 +187,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
               s("OK. Use /nick to get a nickname and talk now.\n", &csock);
             } else {
               attempt++;
-              s("WRONG PASSWORD. (" + intToStr(attempt) + "/" + intToStr(MAX_ATTEMPT)  + ")\n", &csock);
+              s("WRONG PASSWORD. (" + std::to_string(attempt) + "/" + std::to_string(MAX_ATTEMPT)  + ")\n", &csock);
               if(attempt == MAX_ATTEMPT) {
                 clients.erase(clients.begin() + getIndex(csock, clients));
                 closesocket(csock);
@@ -270,7 +263,7 @@ int main(int argc, char** argv) {
   sin.sin_family = AF_INET;
   sin.sin_port = htons(port);
   std::string tmp, key, value;
-  tmp = intToStr(port);
+  tmp = std::to_string(port);
 
   int csock;
   struct sockaddr_in csin;
@@ -295,15 +288,15 @@ int main(int argc, char** argv) {
     info("Main socket created.");
 
   while(bind(sock, (sockaddr *)&sin, sizeof(sin)) != 0) {
-    err("Can't listen to port " + intToStr(port) + " ... check if the port is busy.");
+    err("Can't listen to port " + std::to_string(port) + " ... check if the port is busy.");
     port++;
-    info("Retrying on port " + intToStr(port) + " ...");
+    info("Retrying on port " + std::to_string(port) + " ...");
     sin.sin_port = htons(port);
   }
-  info("bind() successful on port " + intToStr(port));
+  info("bind() successful on port " + std::to_string(port));
 
   listen(sock, 99);
-  info("Listening on port " + intToStr(port));
+  info("Listening on port " + std::to_string(port));
 
   while(1) {
     info("Waiting for peers ...");
@@ -311,7 +304,7 @@ int main(int argc, char** argv) {
     clients.push_back(csock);
     nicks.push_back("");
     threads.push_back(std::thread(clientCare,csock,std::ref(clients),std::ref(nicks)));
-    sAll("Someone (#" + intToStr(csock) + ") joined !\n", clients);
+    sAll("Someone (#" + std::to_string(csock) + ") joined !\n", clients);
 
     s("/nick               : get a name and talk to people.\n", &csock);
     s("/list               : list people on the chat\n", &csock);
