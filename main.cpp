@@ -214,7 +214,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
                 s(" >>> [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), csock);
               }
               else {
-                s(" >>> [PRIVATE] [ERR] SERVER : How can you use /p . <message> if you haven't spoke to anyone before ? Dumbass.\n", csock);
+                s(" >>> [PRIVATE] [ERR] SERVER : How can you use /p . <message> if you haven't spoke to anyone before ?\n", csock);
               }
             }
             else {
