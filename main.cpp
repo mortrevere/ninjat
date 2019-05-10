@@ -117,6 +117,7 @@ bool setNick(int csock, std::vector<int>& clients, std::vector<std::string>& nic
     }
   }
   return 0;
+}
 
 int getIndex(int csock, std::vector<int>& clients) {
   for (std::size_t i = 0; i < clients.size(); i++) {
