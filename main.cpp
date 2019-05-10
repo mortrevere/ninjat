@@ -274,6 +274,11 @@ int main() {
   else
     info("Main socket created.");
 
+  //allows binding on FIN_WAIT1 hanging ports
+  int reuse = 1;
+  if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) < 0)
+    info("setsockopt(SO_REUSEADDR) failed");
+
   while(bind(sock, (sockaddr *)&sin, sizeof(sin)) != 0) {
     err("Can't listen to port " + std::to_string(port) + " ... check if the port is busy.");
     port++;
