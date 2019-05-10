@@ -73,20 +73,20 @@ std::vector<std::string> split(const std::string &s, char delim) {
   return elems;
 }
 
-bool s(std::string toSend, int* sock, bool format = true) {
-  if(*sock <= 0)
+bool s(std::string toSend, int sock, bool format = true) {
+  if(sock <= 0)
     return false;
   if(format)
     toSend = "\t\t\t\t\t\t" + toSend;
 
-  int error = send(*sock,toSend.c_str(),toSend.size(),0);
+  int error = send(sock,toSend.c_str(),toSend.size(),0);
   return !(error == SOCKET_ERROR);
 }
 
 void sAll(const std::string& in, std::vector<int>& clients) {
   std::cout << "[SENT:*] : " << in << std::endl;
   for (std::size_t i = 0; i < clients.size(); i++) {
-    s(in,&clients[i]);
+    s(in, clients[i]);
   }
 }
 
@@ -141,7 +141,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
         motd.replace(pos, 1, "\n\t\t\t\t\t\t");
         pos += 7;
       }
-      s(motd + "\n", &csock);
+      s(motd + "\n", csock);
     }
 
     while(1) {
@@ -173,10 +173,10 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
             password = password.substr(0,password.length() - 1);
             if(password == PASSWORD) {
               authenticated = true;
-              s("OK. Use /nick to get a nickname and talk now.\n", &csock);
+              s("OK. Use /nick to get a nickname and talk now.\n", csock);
             } else {
               attempt++;
-              s("WRONG PASSWORD. (" + std::to_string(attempt) + "/" + std::to_string(MAX_ATTEMPT)  + ")\n", &csock);
+              s("WRONG PASSWORD. (" + std::to_string(attempt) + "/" + std::to_string(MAX_ATTEMPT)  + ")\n", csock);
               if(attempt == MAX_ATTEMPT) {
                 clients.erase(clients.begin() + getIndex(csock, clients));
                 closesocket(csock);
@@ -184,48 +184,48 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
               }
             }
           } else {
-            s("THIS SERVER IS PASSWORD-PROTECTED : use /auth <pw> to log in\n", &csock);
+            s("THIS SERVER IS PASSWORD-PROTECTED : use /auth <pw> to log in\n", csock);
           }
         } else {
           if(in.substr(0,6) == "/nick ") {
             nick = in.substr(6);
             nick = nick.substr(0,nick.length() - 1);
             if(nick.length() > 16) {
-              s(" *** [ERROR] : Nicknames are 16-char-long at most.\n", &csock);
+              s(" *** [ERROR] : Nicknames are 16-char-long at most.\n", csock);
             } else {
               setNick(csock,clients,nicks,nick);
               sAll(" *** [INFO] changed nick to : <" + nick + ">\n", clients);
-              s(buildList(nicks) + "\n", &csock);
+              s(buildList(nicks) + "\n", csock);
             }
           }
           else if(in.substr(0,5) == "/list") {
-            s(buildList(nicks) + "\n", &csock);
+            s(buildList(nicks) + "\n", csock);
           }
           else if(in.substr(0,3) == "/p ") {
             to = in.substr(3,in.substr(3).find(" "));
 
             if(to == ".") {
               if(lastPrivate != "") {
-                s(" *** [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), &clients[getIndexByNick(lastPrivate, nicks)]);
-                s(" >>> [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), &csock);
+                s(" *** [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), clients[getIndexByNick(lastPrivate, nicks)]);
+                s(" >>> [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), csock);
               }
               else {
-                s(" >>> [PRIVATE] [ERR] SERVER : How can you use /p . <message> if you haven't spoke to anyone before ? Dumbass.\n", &csock);
+                s(" >>> [PRIVATE] [ERR] SERVER : How can you use /p . <message> if you haven't spoke to anyone before ? Dumbass.\n", csock);
               }
             }
             else {
               if(to != nick) {
                 if(getIndexByNick(to, nicks) != -1) {
                   lastPrivate = to;
-                  s(" *** [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), &clients[getIndexByNick(to, nicks)]);
-                  s(" >>> [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), &csock);
+                  s(" *** [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), clients[getIndexByNick(to, nicks)]);
+                  s(" >>> [PRIVATE] " + nick + " : " + in.substr(4 + in.substr(3).find(" ")), csock);
                 }
                 else {
-                  s(" >>> [PRIVATE] [ERR] SERVER : It seems like " + to + " is not connected. Sorry.\n", &csock);
+                  s(" >>> [PRIVATE] [ERR] SERVER : It seems like " + to + " is not connected. Sorry.\n", csock);
                 }
               }
               else {
-                s(" >>> [PRIVATE] [ERR] SERVER : DO NOT TALK TO YOURSELF.\n", &csock);
+                s(" >>> [PRIVATE] [ERR] SERVER : DO NOT TALK TO YOURSELF.\n", csock);
               }
             }
           }
@@ -233,7 +233,7 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
             if(nick != "")
               sAll("<" + nick + "> " + in, clients);
             else
-              s(" *** [ERROR] : Please identify first, using /nick <nickname>\n", &csock);
+              s(" *** [ERROR] : Please identify first, using /nick <nickname>\n", csock);
           }
         }
         std::cout << " *** [RECV] : " << in;
@@ -293,13 +293,13 @@ int main() {
     threads.push_back(std::thread(clientCare,csock,std::ref(clients),std::ref(nicks)));
     sAll("Someone (#" + std::to_string(csock) + ") joined !\n", clients);
 
-    s("/nick               : get a name and talk to people.\n", &csock);
-    s("/list               : list people on the chat\n", &csock);
-    s("/p <dest> <message> : pm someone based on nickname\n", &csock);
-    s("/p . <message>      : pm the last person you pm'd\n", &csock);
+    s("/nick               : get a name and talk to people.\n", csock);
+    s("/list               : list people on the chat\n", csock);
+    s("/p <dest> <message> : pm someone based on nickname\n", csock);
+    s("/p . <message>      : pm the last person you pm'd\n", csock);
 
     if(PRIVATE) {
-      s("THIS SERVER IS PASSWORD-PROTECTED : use /auth <pw> to log in\n", &csock);
+      s("THIS SERVER IS PASSWORD-PROTECTED : use /auth <pw> to log in\n", csock);
     }
     info("NCC !");
   }
