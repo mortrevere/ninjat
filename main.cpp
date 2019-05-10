@@ -240,8 +240,8 @@ int clientCare(int csock, std::vector<int>& clients, std::vector<std::string>& n
               }
             }
           }
-          else {
-            if(nick != "" && in != "\n")
+          else if(in != "\n") {
+            if(nick != "")
               sAll("<" + nick + "> " + in, clients);
             else
               s(" *** [ERROR] : Please identify first, using /nick <nickname>\n", &csock);
