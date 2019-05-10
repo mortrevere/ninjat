@@ -73,7 +73,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
   return elems;
 }
 
-bool s(std::string toSend, int* sock, bool format = 1) {
+bool s(std::string toSend, int* sock, bool format = true) {
   if(*sock <= 0)
     return false;
   if(format)
