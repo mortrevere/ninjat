@@ -306,6 +306,7 @@ int main() {
     s("/list               : list people on the chat\n", csock);
     s("/p <dest> <message> : pm someone based on nickname\n", csock);
     s("/p . <message>      : pm the last person you pm'd\n", csock);
+    s("/quit               : well, you guessed it\n", csock);
 
     if(PRIVATE) {
       s("THIS SERVER IS PASSWORD-PROTECTED : use /auth <pw> to log in\n", csock);

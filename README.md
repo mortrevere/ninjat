@@ -19,7 +19,7 @@ Default port is 1337.
 
 ## Usage
 
-Available commands are : 
+Available commands are :
 
 ```
 /nick            : set your name and talk to people (auth).
@@ -27,6 +27,7 @@ Available commands are :
 /p <dest> <msg>  : pm someone based on nickname
 /p . <msg>       : pm the last person you pm'd
 /auth <password> : input a password to authorize your connection (for private servers ony)
+/quit            : disconnect from and leave the chat
 ```
 
 ## Configuration
